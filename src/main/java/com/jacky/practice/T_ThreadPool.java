@@ -1,26 +1,32 @@
 package com.jacky.practice;
 
 import com.jacky.common.util.DateUtil;
+import com.jacky.common.util.LogUtil;
 import com.jacky.common.util.ThreadPoolUtil;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import com.jacky.common.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class T_ThreadPool {
     public static void main(String[] args) {
 
         //testThreadPoolTaskExecutor();
 
-        CountDownLatch countDownLatch = new CountDownLatch(20);
+        AtomicInteger atomicInteger = new AtomicInteger();
+        CountDownLatch countDownLatch = new CountDownLatch(100);
         //CountDownLatch强调一个线程等多个线程完成某件事情。CyclicBarrier是多个线程互等，等大家都完成。
         //CyclicBarrier cyclicBarrier = new CyclicBarrier(6);
 
-        for (int i = 0; i < 20; i++) {
-            ThreadPoolUtil.execute((t1, c) -> {
+        // 方式1：以自定义的计数器控制流程，结束后主动关闭线程池
+        for (int i = 0; i < 100; i++) {
+            ThreadPoolUtil.execute(() -> {
                 try {
-                    Thread.sleep(1000);
-                    c.countDown();
+                    Thread.sleep(10000);
+                    atomicInteger.addAndGet(1);
+                    countDownLatch.countDown();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -35,8 +41,28 @@ public class T_ThreadPool {
 //                } catch (BrokenBarrierException e) {
 //                    e.printStackTrace();
 //                }
-            }, 1, countDownLatch);
+            });
         }
+
+        // 方式2：后台线程池方式启动，不能主动关闭主流程，任务可能未完全完成
+//        List<String> list = new ArrayList<>();
+//        for (int i = 0; i < 100; i++) {
+//            list.add(String.valueOf(i) + "test");
+//        }
+
+//        ThreadPoolUtil.execute((t1) -> {
+//
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            atomicInteger.addAndGet(1);
+//            LogUtil.error(t1);
+//
+//        }, list, false);
+
+        LogUtil.error(String.format("主线程执行完成，累计执行了%s次", atomicInteger.get()));
 
         try {
             countDownLatch.await();
@@ -44,11 +70,10 @@ public class T_ThreadPool {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-//        catch (BrokenBarrierException e) {
-//            e.printStackTrace();
-//        }
 
-        // 若有需要关闭连接池，待所有线程处理完后再关闭
+        LogUtil.error(String.format("所有线程执行完成，累计执行了%s次", atomicInteger.get()));
+
+        // 若有需要关闭连接池，待所有线程处理完后再关闭，请用execute(runable)方式，主动使用计数器
         ThreadPoolUtil.shutdown();
     }
 

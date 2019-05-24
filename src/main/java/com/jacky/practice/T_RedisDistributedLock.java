@@ -65,16 +65,16 @@ public class T_RedisDistributedLock {
         for (int i = 0; i < MAX_THREAD; i++) {
 
             // 1.即便有MAX_THREAD个任务，但实际并行的线程数量可能很少
-            ThreadPoolUtil.execute((j, c) -> {
+            ThreadPoolUtil.execute(() -> {
                 System.out.println(String.format("正在启动线程【%s】", Thread.currentThread().getName()));
 
                 // 2.把redis资源的具体使用放到线程内实现，避免浪费资源，因为实际在同时运行的线程较少
-                int max1 = j.getNumActive();
-                int max2 = j.getNumWaiters();
-                int max3 = j.getNumIdle();
+                int max1 = jedisPool.getNumActive();
+                int max2 = jedisPool.getNumWaiters();
+                int max3 = jedisPool.getNumIdle();
 
                 // 等待获取redis连接是会阻塞
-                Jedis jedis = j.getResource();
+                Jedis jedis = jedisPool.getResource();
                 while (!listOrder.isEmpty()) {
 
                     Order order = null;
@@ -120,9 +120,9 @@ public class T_RedisDistributedLock {
 
                 System.out.println(String.format("线程结束【%s】", Thread.currentThread().getName()));
                 // 执行完成后将计数器+1
-                c.countDown();
+                countDownLatch.countDown();
                 jedis.close();
-            }, jedisPool, countDownLatch);
+            });
         }
 
         // 写线程
