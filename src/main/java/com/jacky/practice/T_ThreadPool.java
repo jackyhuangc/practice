@@ -3,6 +3,7 @@ package com.jacky.practice;
 import com.jacky.common.util.DateUtil;
 import com.jacky.common.util.LogUtil;
 import com.jacky.common.util.ThreadPoolUtil;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
@@ -114,7 +115,7 @@ public class T_ThreadPool {
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-
+            LogUtil.error(e);
         }
 
         poolTaskExecutor.shutdown();
