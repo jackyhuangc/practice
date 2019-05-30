@@ -4,7 +4,7 @@
  * Java的包名都有小写单词组成，类名首字母大写；包的路径符合所开发的 系统模块的 定义
  * 公司名可用域名代替，可避免重名
  */
-package com.jackyhuangc.global.console;
+package com.jacky.practice;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jacky.common.util.DateUtil;
