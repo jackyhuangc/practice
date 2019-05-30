@@ -134,6 +134,9 @@ public class T_RabbitMQ {
                     throw new IOException("模拟随机异常");
                 }
 
+                // FIXME 不要在消费/接收时处理耗时的任务，应该将消息入库，结合XXL-JOB异步调用执行，否则可能会导致RabbitMQ转发服务超时，
+                // FIXME 增加系统消耗和负担，降低系统可靠性。
+
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
         };
