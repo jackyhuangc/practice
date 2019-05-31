@@ -1,18 +1,21 @@
 package com.jacky.practice;
 
 
+import com.jacky.common.util.LogUtil;
 import javafx.util.Builder;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketOption;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.nio.channels.spi.AsynchronousChannelProvider;
+import java.util.Set;
+import java.util.concurrent.*;
 
 public class T_AIOServer {
 
@@ -83,6 +86,61 @@ public class T_AIOServer {
         });
     }
 
+    public static void server() throws IOException {
+        final AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(IP, PORT));
+
+        server.accept(null, new CompletionHandler<AsynchronousSocketChannel, Object>() {
+            @Override
+            public void completed(AsynchronousSocketChannel result, Object attachment) {
+
+                final ByteBuffer byteBuffer = ByteBuffer.allocate(4);
+                try {
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    Integer length = 0;
+                    //do
+                    {
+                        // get 将阻塞，配合while持续读取
+                        length = result.read(byteBuffer).get(1000, TimeUnit.SECONDS);
+                        stringBuilder.append(new String(byteBuffer.array(), 0, length));
+
+                        LogUtil.warn(String.format("接收到%s个字符：%s", length, new String(byteBuffer.array(), 0, length)));
+                        byteBuffer.clear();
+                    }
+                    //while (true);
+
+                    LogUtil.warn(String.format("接收到%s个字符：%s", stringBuilder.length(), stringBuilder.toString()));
+                    LogUtil.info(new String(byteBuffer.array(), 0, length));
+
+                    byteBuffer.flip();
+
+                    length = result.write(ByteBuffer.wrap(stringBuilder.toString().getBytes())).get();
+                    LogUtil.warn(String.format("返回到%s个字符：%s", stringBuilder.length(), stringBuilder.toString()));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+
+                    // 继续接收
+                    server.accept(null, this);
+                    try {
+                        result.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void failed(Throwable exc, Object attachment) {
+                LogUtil.error(new Exception(exc));
+            }
+        });
+    }
+
     public static void client() throws IOException {
 
         final AsynchronousSocketChannel client = AsynchronousSocketChannel.open();
@@ -147,9 +205,11 @@ public class T_AIOServer {
     }
 
     public static void main(String[] args) throws IOException {
-        new T_AIOServer().start();
+        // new T_AIOServer().start();
+        server();
+//
+//        //client();
 
-        //client();
         while (true) {
             try {
                 Thread.sleep(1000);
