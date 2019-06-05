@@ -2,8 +2,10 @@ package com.jacky.practice;
 
 
 import com.jacky.common.util.LogUtil;
+import com.sun.mail.iap.ByteArray;
 import javafx.util.Builder;
 
+import javax.management.StringValueExp;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -97,22 +99,51 @@ public class T_AIOServer {
                 try {
 
                     StringBuilder stringBuilder = new StringBuilder();
+                    Integer total = 0;
+                    Integer passed = 0;
                     Integer length = 0;
-                    //do
-                    {
+                    do {
+
+                        //position将被设回0，limit设置成capacity，换句话说，Buffer被清空了
+                        byteBuffer.clear();
+
                         // get 将阻塞，配合while持续读取
-                        length = result.read(byteBuffer).get(1000, TimeUnit.SECONDS);
+                        length = result.read(byteBuffer).get(60, TimeUnit.SECONDS);
+
+                        // 开始帧头
+                        if (byteBuffer.array()[0] == 0x0A) {
+                            // 内容长度
+                            total = (int) byteBuffer.array()[1];
+                        }
+
                         stringBuilder.append(new String(byteBuffer.array(), 0, length));
 
                         LogUtil.warn(String.format("接收到%s个字符：%s", length, new String(byteBuffer.array(), 0, length)));
-                        byteBuffer.clear();
+
+                        //position设回0，并将limit设成之前的position的值
+                        //将数据写回客户端
+                        //byteBuffer.flip();
+                        //writeResult = result.write(byteBuffer);
+
+                        //compact()方法将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面。limit属性依然像clear()方法一样，设置成capacity。
+                        // 现在Buffer准备好写数据了，但是不会覆盖未读的数据
+                        //byteBuffer.compact();
+
+                        passed += length;
                     }
-                    //while (true);
+                    while (passed < total);
+
+                    /**
+                     * FIXME 使用具有消息头和长度的报文格式，解决粘包问题
+                     * 使用带消息头的协议、消息头存储消息开始标识及消息长度信息，服务端获取消息头的时候解析出消息长度，然后向后读取该长度的内容。
+                     * 设置定长消息，服务端每次读取既定长度的内容作为一条完整消息。
+                     * 设置消息边界，服务端从网络流中按消息编辑分离出消息内容。
+                     */
 
                     LogUtil.warn(String.format("接收到%s个字符：%s", stringBuilder.length(), stringBuilder.toString()));
                     LogUtil.info(new String(byteBuffer.array(), 0, length));
 
-                    byteBuffer.flip();
+                    // byteBuffer.flip();
 
                     length = result.write(ByteBuffer.wrap(stringBuilder.toString().getBytes())).get();
                     LogUtil.warn(String.format("返回到%s个字符：%s", stringBuilder.length(), stringBuilder.toString()));
@@ -153,7 +184,15 @@ public class T_AIOServer {
             public void completed(Void result, Object attachment) {
 
                 System.out.println(attachment);
-                client.write(ByteBuffer.wrap("测试数据".getBytes()), null,
+
+                byte[] body = "测试数据".getBytes();
+                byte[] bytes = new byte[body.length + 3];
+                bytes[0] = 0x0A;
+                bytes[1] = Byte.valueOf(String.valueOf(body.length + 3));
+                System.arraycopy(body, 0, bytes, 2, body.length);
+                bytes[bytes.length - 1] = 0x0B;
+
+                client.write(ByteBuffer.wrap(bytes), null,
                         new CompletionHandler<Integer, Object>() {
 
                             @Override
@@ -208,7 +247,7 @@ public class T_AIOServer {
         // new T_AIOServer().start();
         server();
 //
-//        //client();
+        client();
 
         while (true) {
             try {

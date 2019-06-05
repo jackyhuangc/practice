@@ -1,5 +1,7 @@
 package com.jacky.practice;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,6 +23,14 @@ public class ThreadTest {
     }
 
     public static void main(String ss[]) {
+
+
+        String[] strArray = UUID.randomUUID().toString().split("-");
+
+        String   s   = StringUtils.substring(strArray[0], 0, 4) + StringUtils.substring(strArray[1], 0, 2)
+                + StringUtils.substring(strArray[2], 0, 2) + StringUtils.substring(strArray[3], 0, 2)
+                + StringUtils.substring(strArray[4], 0, 3);
+
         /**
          * 记录开始时间，理论上耗时略大于MAX_ORDERS×SLEEP/MAX_THREADS
          */
