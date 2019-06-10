@@ -72,6 +72,7 @@ public class T_NIOServer {
                 }
 
                 // 服务端关心的可读，意味着有数据从client传来了，根据不同的需要进行读取，然后返回
+                // FIXME 解决粘包的问题 https://blog.csdn.net/nongfuyumin/article/details/78343999
                 if (selectionKey.isReadable()) {
                     System.out.println("isReadable");
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
