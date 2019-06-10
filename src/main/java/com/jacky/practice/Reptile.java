@@ -33,6 +33,12 @@ public class Reptile {
                 "sz000959", "sh600111", "sh600549", "sh600259", "sh600058",
                 "sh600259", "sz000758", "sh600111", "sz000969", "sz000970"});
 
+        Map<String, List<Stock>> map = new HashMap<>();
+
+        map.put("test1", marketDataList);
+        map.put("test2", marketDataList);
+        LogUtil.warn(JsonUtil.toJson(map));
+
         marketDataList.forEach((stock) -> {
             String message = String.format(
                     "日期:%s,代码:%s,名称:%s,今开:%s,昨收:%s,最新:%s,最高:%s,最低:%s,总手:%s万手,金额:%s亿元,涨幅:%s%%",
