@@ -54,13 +54,13 @@ public class T_ThreadLocal {
 
     public static void main(String[] args) {
 
-        Test t1=new Test();
+        Test t1 = new Test();
         t1.setA("a1");
         t1.setB("b1");
 
-        String t2=JsonUtil.toJson(t1);
+        String t2 = JsonUtil.toJson(t1);
         //t2="{\"a\":\"a1\",\"b\":\"b1\"}";
-        t2="{\"a\":\"a1\",\"b\":\"b1\",\"c\":\"c1\"}";
+        t2 = "{\"a\":\"a1\",\"b\":\"b1\",\"c\":\"c1\"}";
         Test t3 = JsonUtil.fromJson(t2, new TypeReference<Test>() {
         });
 
