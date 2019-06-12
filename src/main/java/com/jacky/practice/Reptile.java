@@ -14,6 +14,7 @@ import javax.script.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 
 import static java.util.regex.Pattern.*;
@@ -32,6 +33,15 @@ public class Reptile {
                 "sz300748", "sz000795", "sh600366", "sz000060", "sh600704",
                 "sz000959", "sh600111", "sh600549", "sh600259", "sh600058",
                 "sh600259", "sz000758", "sh600111", "sz000969", "sz000970"});
+
+        Map<String, List<Stock>> map = new HashMap<>();
+
+        map.put("test1", marketDataList);
+        map.put("test2", marketDataList);
+        LogUtil.warn(JsonUtil.toJson(map));
+
+//        Supplier<Stock> supplier=Stock::new;
+//        supplier.get();
 
         marketDataList.forEach((stock) -> {
             String message = String.format(
