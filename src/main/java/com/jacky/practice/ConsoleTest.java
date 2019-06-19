@@ -307,7 +307,7 @@ class ConsoleTest {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println(String.format("%s------%s,%s,%s",DateUtil.now(), Thread.currentThread().getId(), Thread.currentThread().getName(), 0));
+                System.out.println(String.format("%s------%s,%s,%s", DateUtil.now(), Thread.currentThread().getId(), Thread.currentThread().getName(), 0));
             });
         }
     }
