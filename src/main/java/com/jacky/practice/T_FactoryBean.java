@@ -61,9 +61,9 @@ class SpiFactoryBean<T> implements FactoryBean<T> {
     public SpiFactoryBean(ApplicationContext applicationContext, Class<? extends ISpi> clz) {
         this.spiClz = clz;
 
-//        Map<String, ? extends ISpi> map = applicationContext.getBeansOfType(spiClz);
-//        list = new ArrayList<>(map.values());
-//        list.sort(Comparator.comparingInt(ISpi::order));
+        Map<String, ? extends ISpi> map = applicationContext.getBeansOfType(spiClz);
+        list = new ArrayList<>(map.values());
+        list.sort(Comparator.comparingInt(ISpi::order));
     }
 
     @Override
