@@ -26,6 +26,10 @@ public class T_ListOrSetOrMap {
          而排序是指插入元素后，集合中的元素是否自动排序。（例如升序排序）
 
          HashMap、 HashSet、 HashTable 等 基于哈希存储方式的集合是无序的。其它的集合都是有序的。
+         可以看到LinkedHashMap.Entry 继承自HashMap.Node 除了Node 本身有的几个属性外，额外增加了before after
+         用于指向前一个Entry 后一个Entry。也就是说，元素之间维持着一条总的链表数据结构。
+         正式因为这个链表才保证了LinkedHashMap的有序性。
+
          LindedList(基于链表) ，ArrayList(基于动态数组)都是有序的。
          而TreeMap(SortedMap接口) TreeSet(SortedSet接口) 等集合是排序的，即实现了排序接口。
          ***/
