@@ -2,7 +2,6 @@
 //
 //import java.util.*;
 //import java.util.concurrent.TimeUnit;
-//
 //import kafka.consumer.Consumer;
 //import kafka.consumer.ConsumerIterator;
 //import kafka.consumer.KafkaStream;
@@ -12,6 +11,7 @@
 //import kafka.producer.KeyedMessage;
 //import kafka.producer.ProducerConfig;
 //import kafka.serializer.StringEncoder;
+//import org.apache.kafka.clients.producer.Producer;
 //
 //import java.text.SimpleDateFormat;
 //import java.util.Properties;
