@@ -101,7 +101,7 @@ public class HelloHbase {
 //        table.close();
 //        connect.close();
 
-        String tableName = "tl";
+        String tableName = "t1";
         String family = "f1";
         String rowKey = "row1";
         System.out.println("add data");
