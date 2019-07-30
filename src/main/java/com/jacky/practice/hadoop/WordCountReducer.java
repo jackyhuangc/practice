@@ -1,4 +1,4 @@
-package com.jacky.practice;
+package com.jacky.practice.hadoop;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;

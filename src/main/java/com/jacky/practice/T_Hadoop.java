@@ -1,5 +1,6 @@
 package com.jacky.practice;
 
+import com.jacky.practice.hadoop.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.*;
@@ -12,7 +13,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -26,7 +26,9 @@ public class T_Hadoop extends Configured {
         new T_Hadoop().test2();
         new T_Hadoop().test3();
         new T_Hadoop().test4();
-        test5();
+        //test5();
+        //test6();
+        test7();
     }
 
     public void test1() {
@@ -338,6 +340,151 @@ public class T_Hadoop extends Configured {
         }
 
         FileOutputFormat.setOutputPath(job, new Path("hdfs://ns1/wordcount/output"));
+
+
+        /*** 这是使用普通模式访问hadoop***/
+//        FileInputFormat.setInputPaths(job, new Path("hdfs://master:9000/wordcount/input"));
+//        FileSystem fs = DistributedFileSystem.get(new URI("hdfs://master:9000"), conf);
+//        if (fs.exists(new Path("hdfs://master:9000/wordcount/output"))) {
+//            System.out.println("output文件已经存在，正在删除...");
+//            fs.delete(new Path("hdfs://master:9000/wordcount/output"), true);
+//        }
+//
+//        FileOutputFormat.setOutputPath(job, new Path("hdfs://master:9000/wordcount/output"));
+//
+
+        // job.submit(); //一般不要这个.
+        //提交程序  并且监控打印程序执行情况
+        boolean b = job.waitForCompletion(true);
+        System.exit(b ? 0 : 1);
+    }
+
+
+    public static void test6() throws Exception {
+        //通过Job来封装本次mr的相关信息
+
+        System.out.println("*******************");
+
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://ns1");
+        conf.set("dfs.nameservices", "ns1");
+        conf.set("dfs.ha.namenodes.ns1", "nn1,nn2");
+        conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
+        conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
+//            //conf.setBoolean(name, value);
+        conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+
+        // 即使没有下面这行,也可以本地运行 因\hadoop-mapreduce-client-core-2.7.4.jar!\mapred-default.xml 中默认的参数就是 local
+        //conf.set("mapreduce.framework.name","local");
+        Job job = Job.getInstance(conf);
+
+        //指定本次mr job jar包运行主类
+        job.setJarByClass(T_Hadoop.class);
+
+        //指定本次mr 所用的mapper reducer类分别是什么
+        job.setMapperClass(FlowSumMapper.class);
+        job.setReducerClass(FlowSumReducer.class);
+
+        //指定本次mr mapper阶段的输出  k  v类型
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(FlowBean.class);
+
+        //指定本次mr 最终输出的 k v类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(FlowBean.class);
+
+        // job.setNumReduceTasks(3); //ReduceTask个数
+
+        //如果业务有需求，就可以设置combiner组件
+        //job.setCombinerClass(WordCountReducer.class);
+
+        //指定本次mr 输入的数据路径 和最终输出结果存放在什么位置
+        //FileInputFormat.setInputPaths(job, "/Users/huangchao/docker/input");
+        //FileOutputFormat.setOutputPath(job, new Path("/Users/huangchao/docker/output"));
+        //如果出现0644错误或找不到winutils.exe,则需要设置windows环境和相关文件.
+
+        //上面的路径是本地测试时使用，如果要打包jar到hdfs上运行时，需要使用下面的路径。
+        FileInputFormat.setInputPaths(job, new Path("hdfs://ns1/wordcount/phonetxt"));
+        FileSystem fs = DistributedFileSystem.get(new URI("hdfs://ns1"), conf);
+        if (fs.exists(new Path("hdfs://ns1/wordcount/phonetxtout"))) {
+            System.out.println("phonetxtout文件已经存在，正在删除...");
+            fs.delete(new Path("hdfs://ns1/wordcount/phonetxtout"), true);
+        }
+
+        System.out.println("phonetxtout重新生成");
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://ns1/wordcount/phonetxtout"));
+
+
+        /*** 这是使用普通模式访问hadoop***/
+//        FileInputFormat.setInputPaths(job, new Path("hdfs://master:9000/wordcount/input"));
+//        FileSystem fs = DistributedFileSystem.get(new URI("hdfs://master:9000"), conf);
+//        if (fs.exists(new Path("hdfs://master:9000/wordcount/output"))) {
+//            System.out.println("output文件已经存在，正在删除...");
+//            fs.delete(new Path("hdfs://master:9000/wordcount/output"), true);
+//        }
+//
+//        FileOutputFormat.setOutputPath(job, new Path("hdfs://master:9000/wordcount/output"));
+//
+
+        // job.submit(); //一般不要这个.
+        //提交程序  并且监控打印程序执行情况
+        boolean b = job.waitForCompletion(true);
+        System.exit(b ? 0 : 1);
+    }
+
+    public static void test7() throws Exception {
+        //通过Job来封装本次mr的相关信息
+
+        System.out.println("*******************");
+
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://ns1");
+        conf.set("dfs.nameservices", "ns1");
+        conf.set("dfs.ha.namenodes.ns1", "nn1,nn2");
+        conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
+        conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
+//            //conf.setBoolean(name, value);
+        conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+
+        // 即使没有下面这行,也可以本地运行 因\hadoop-mapreduce-client-core-2.7.4.jar!\mapred-default.xml 中默认的参数就是 local
+        //conf.set("mapreduce.framework.name","local");
+        Job job = Job.getInstance(conf);
+
+        //指定本次mr job jar包运行主类
+        job.setJarByClass(T_Hadoop.class);
+
+        //指定本次mr 所用的mapper reducer类分别是什么
+        job.setMapperClass(FlowSumSort.FlowSumSortMapper.class);
+        job.setReducerClass(FlowSumSort.FlowSumSortReducer.class);
+
+        //指定本次mr mapper阶段的输出  k  v类型
+        job.setMapOutputKeyClass(FlowBean.class);
+        job.setMapOutputValueClass(Text.class);
+
+        //指定本次mr 最终输出的 k v类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(FlowBean.class);
+
+        // job.setNumReduceTasks(3); //ReduceTask个数
+
+        //如果业务有需求，就可以设置combiner组件
+        //job.setCombinerClass(WordCountReducer.class);
+
+        //指定本次mr 输入的数据路径 和最终输出结果存放在什么位置
+        //FileInputFormat.setInputPaths(job, "/Users/huangchao/docker/input");
+        //FileOutputFormat.setOutputPath(job, new Path("/Users/huangchao/docker/output"));
+        //如果出现0644错误或找不到winutils.exe,则需要设置windows环境和相关文件.
+
+        //上面的路径是本地测试时使用，如果要打包jar到hdfs上运行时，需要使用下面的路径。
+        FileInputFormat.setInputPaths(job, new Path("hdfs://ns1/wordcount/phonetxtout"));
+        FileSystem fs = DistributedFileSystem.get(new URI("hdfs://ns1"), conf);
+        if (fs.exists(new Path("hdfs://ns1/wordcount/phonetxtoutsort"))) {
+            System.out.println("phonetxtout文件已经存在，正在删除...");
+            fs.delete(new Path("hdfs://ns1/wordcount/phonetxtoutsort"), true);
+        }
+
+        System.out.println("phonetxtout重新生成");
+        FileOutputFormat.setOutputPath(job, new Path("hdfs://ns1/wordcount/phonetxtoutsort"));
 
 
         /*** 这是使用普通模式访问hadoop***/
