@@ -2,6 +2,7 @@ package com.jacky.practice;
 
 
 import com.jacky.common.util.DateUtil;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +21,8 @@ public class NULL {
 
     public static void main(String[] args) {
 
-        String test=",,,,";
-        String[] array=test.split(",");
+        String test = ",,,,";
+        String[] array = test.split(",");
 
         List<String> list = new ArrayList<String>();
         list.add("a");
@@ -32,7 +33,7 @@ public class NULL {
         List<String> list2 = list.subList(0, list.size());
 
         // 集合转数组
-        String[] strArray=new String[list.size()];
+        String[] strArray = new String[list.size()];
         list2.toArray(strArray);
         list2.add("b");
 

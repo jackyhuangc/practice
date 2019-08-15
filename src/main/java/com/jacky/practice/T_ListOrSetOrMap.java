@@ -5,10 +5,16 @@ import com.jacky.common.util.JsonUtil;
 
 import java.util.*;
 
+
+import lombok.Data;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import static org.junit.Assert.assertEquals;
 
 public class T_ListOrSetOrMap {
 
@@ -251,4 +257,27 @@ public class T_ListOrSetOrMap {
             System.out.println(treest);
         }
     }
+
+    @Test
+    public void test1() {
+
+//        List<String> primarySources = new ArrayList<>();
+//        primarySources.add("1");
+//        primarySources.add("2");
+//        primarySources.add("3");
+//        primarySources.add("4");
+//        primarySources.add("1");
+//        primarySources.add("2");
+
+        String[] primarySources = new String[]{"1", "2", "1"};
+
+        Set<String> list = new LinkedHashSet<>(Arrays.asList(primarySources));
+    }
+
+//    @Data
+//    class test
+//    {
+//        private String a;
+//        private String b;
+//    }
 }
