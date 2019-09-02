@@ -6,6 +6,7 @@ import com.jacky.common.util.JsonUtil;
 import java.util.*;
 
 
+import jdk.internal.org.objectweb.asm.TypeReference;
 import lombok.Data;
 import org.junit.Test;
 
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 
@@ -274,10 +278,151 @@ public class T_ListOrSetOrMap {
         Set<String> list = new LinkedHashSet<>(Arrays.asList(primarySources));
     }
 
+    @Test
+    public void test2() {
+        List<String> list = Collections.EMPTY_LIST;
+        list = Arrays.asList("awg", "weg", "wweg", "wegwe");
+        list.forEach(System.out::println);
+        list.forEach(str -> {
+            if ("awg".equals(str)) {
+                return;
+            }
+            System.out.println(str);
+        });
+    }
+
+    /**
+     * T orElse(T other)
+     * 产生这个Optional的值，或者在该Optional为空时，产生other。
+     * <p>
+     * T orElseGet(Supplier<? extends T>other)
+     * 产生这个Optional的值，或者在该Optional为空时，产生调用other的结果。
+     * ————————————————
+     * 版权声明：本文为CSDN博主「孑辞」的原创文章，遵循CC 4.0 by-sa版权协议，转载请附上原文出处链接及本声明。
+     * 原文链接：https://blog.csdn.net/qq_40448026/article/details/80275652
+     */
+    @Test
+    public void test3() {
+        List<Integer> list = Arrays.asList();
+        //通过reduce方法得到一个Optional类
+        Integer a = list.stream().findFirst().orElse(null);
+
+        // orElseGet 产生调用other的结果，不能null(因为类型是Supplier，有方法调用)，否则会报错
+        // Integer b = list.stream().findFirst().orElseGet(null);
+        Integer b = list.stream().findFirst().orElseGet(() -> {
+            return null;
+        });
+
+        /**
+         * Predicate：用于测试是否符合条件。
+         * Function：接受一个参数，返回一个参数。接收的是参数，关键看怎么用，小写传参，大写调用
+         * Consumer：接受一个参数，不返回参数。
+         * Supplier：无输入参数，返回一个结果。
+         */
+
+        System.out.println("a  " + a);
+        System.out.println("b  " + b);
+
+        list = Arrays.asList(10, 20, 30);
+        a = list.stream().findFirst().orElse(get("a"));
+        b = list.stream().findFirst().orElseGet(() -> get("b"));
+        System.out.println("a  " + a);
+        System.out.println("b  " + b);
+
+        Consumer<String> s = (s1) -> {
+
+        };
+
+        s.accept("s1");
+
+        Supplier<String> s2 = () -> {
+            return "s2";
+        };
+
+        Function<String, String> f = (f1) -> {
+            return f1;
+        };
+
+        f.apply("f1");
+
+        Function<String, Integer> f1 = Integer::new;
+
+        f1.apply("1");
+
+        String result = s2.get();
+
+        TestClass testClass = new TestClass();
+
+        // 小写调用是将accept中的实参当做调用方法的入参传进入，Consumer的泛型要与调用方法的入参保持一致，否则会报错
+        Consumer<String> t1 = testClass::aaa;
+        t1.accept("abc");
+
+        // 大写调用是将accept中的实参去调用冒号后的方法，是调用，Consumer的泛型要与类保持一致
+        Consumer<TestClass> t2 = TestClass::aaa1;
+        t2.accept(testClass);
+        t2.accept(new TestClass());
+
+        Function<TestClass, String> t3 = TestClass::bbb1;
+        t3.apply(testClass);
+
+        Function<String, String> t4 = testClass::bbb;
+        t4.apply("xxx");
+
+        Supplier<Boolean> t5 = testClass::ccc;
+        t5.get();
+
+        Supplier<TestClass> t6 = TestClass::new;
+        t6.get();
+    }
+
+    public static int get(String name) {
+        System.out.println(name + "执行了方法");
+        return 1;
+    }
+
+    public static void testConsumer(Consumer<String> c, String t) {
+        c.accept(t);
+    }
+
+
+    public static String testSupplier(Supplier<String> s) {
+        return s.get();
+    }
+
 //    @Data
 //    class test
 //    {
 //        private String a;
 //        private String b;
 //    }
+
+    class TestClass {
+
+        public void aaa(String aa) {
+        }
+
+        public void aaa1() {
+            return;
+        }
+
+        public String bbb1() {
+            return "";
+        }
+
+        public String bbb(String a) {
+            return "";
+        }
+
+        public boolean ccc() {
+            return true;
+        }
+
+        public Boolean ccc1(String aa) {
+            return true;
+        }
+
+        public String ddd() {
+            return "";
+        }
+    }
 }
