@@ -1,5 +1,7 @@
 package com.jacky.practice;
 
+import org.junit.Test;
+
 /**
  * Description Here!
  *
@@ -23,6 +25,8 @@ class HelloA {
 	static {
 		System.out.println("static A");
 	}
+
+
 
 }
 

@@ -375,6 +375,65 @@ public class T_ListOrSetOrMap {
         t6.get();
     }
 
+    @Test
+    public void test5() {
+        String str = "{\n" +
+                "  \"fromSystem\" : \"BIZ\",\n" +
+                "  \"key\" : \"TEST12345678\",\n" +
+                "  \"type\" : \"AcctRegister\",\n" +
+                "  \"data\" : {\n" +
+                "    \"reback_URL\" : \"http://124.133.252.132:7066/gateway/sccba/orgRegister?AuthTokenID=519291cb961ee7fdc8438d419bd52016\",\n" +
+                "    \"company_name\" : \"公司名称\",\n" +
+                "    \"company_id_type\" : \"01\",\n" +
+                "    \"company_id_num\" : \"公司证件号码\",\n" +
+                "    \"legal\" : \"法人\",\n" +
+                "    \"legal_id_type\" : \"01\",\n" +
+                "    \"legal_id_num\" : \"340803199608152312\",\n" +
+                "    \"operator\" : \"代办人\",\n" +
+                "    \"operator_id_type\" : \"01\",\n" +
+                "    \"operator_id_num\" : \"340803199608152312\",\n" +
+                "    \"operator_tel\" : \"13512345678\",\n" +
+                "    \"operator_email\" : \"g_cdbiz@kuainiugroup.com\",\n" +
+                "    \"acct_type\" : \"01\",\n" +
+                "    \"acct_num\" : 12345678\"\n" +
+                "  }\n" +
+                "}";
+
+
+        String str1 = "{\n" +
+                "  \"from_system\": \"BIZ\",\n" +
+                "  \"key\" : \"TEST123456\",\n" +
+                "  \"type\": \"CardBind\",\n" +
+                "  \"data\": {\n" +
+                "    \"reback_URL\": \"http://test.deposit.kuainiu.io/account/do-bind-card?id=2&reback=1\",\n" +
+                "    \"sub_acct_no\": \"81503410000000000025413\",\n" +
+                "    \"acct_id\": 2\n" +
+                "  }\n" +
+                "}";
+
+        String str2 = "{\n" +
+                "  \"from_system\": \"BIZ\",\n" +
+                "  \"key\" : \"TEST123456\",\n" +
+                "  \"type\": \"CardUnbind\",\n" +
+                "  \"data\": {\n" +
+                "    \"reback_URL\": \"http://test.deposit.kuainiu.io/account/do-bind-card?id=2&reback=1\",\n" +
+                "    \"sub_acct_no\": \"815034100000000000254131\",\n" +
+                "    \"acct_id\": 2\n" +
+                "  }\n" +
+                "}";
+
+        String str3 = "{\n" +
+                "  \"key\" : \"TEST123456\",\n" +
+                "    \"type\":\"AcctDetailStatement\",\n" +
+                "    \"from_system\":\"DSQ\",\n" +
+                "    \"data\":{\n" +
+                "        \"start_date\":\"2022-02-02\",\n" +
+                "        \"end_date\":\"2022-04-05\"\n" +
+                "    }\n" +
+                "}";
+
+    }
+
     public static int get(String name) {
         System.out.println(name + "执行了方法");
         return 1;
