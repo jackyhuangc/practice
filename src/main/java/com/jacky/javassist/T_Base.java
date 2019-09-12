@@ -1,5 +1,7 @@
 package com.jacky.javassist;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import java.lang.management.ManagementFactory;
 
 /**

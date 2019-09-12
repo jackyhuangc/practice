@@ -53,7 +53,7 @@ public class T_SuperExtends {
         String str = "xxx";
         System.out.println("fff测试sssss" + Md5Util.encode("FFFFFFF") + (args.length > 0 ? args[0] : ""));
 
-        // Number "extends" Number (in this context)
+        // Number "extends" Number (in this Context)
         List<? extends Number> foo1 = new ArrayList<Number>();
 
         // Integer extends Number

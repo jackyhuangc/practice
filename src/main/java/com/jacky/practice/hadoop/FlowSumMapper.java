@@ -19,7 +19,7 @@ public class FlowSumMapper extends Mapper<LongWritable, Text, Text, FlowBean>{
         long upFlow = Long.parseLong(fields[fields.length-3]); //倒着获取需要的字段
         long downFlow = Long.parseLong(fields[fields.length-2]);
 
-        // context.write(new Text(phoneNum),new FlowBean(upFlow,downFlow)); //效率太低,每次都产生对象.
+        // Context.write(new Text(phoneNum),new FlowBean(upFlow,downFlow)); //效率太低,每次都产生对象.
 
         //使用对象中的set方法来写入数据,避免大量new对象
         k.set(phoneNum);

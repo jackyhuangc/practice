@@ -31,8 +31,8 @@ class JUnitBaseUtil {
         try {
             context = new ClassPathXmlApplicationContext(springXmlpath.split("[,\\s]+"));
 
-            //context.getEnvironment().setActiveProfiles("");
-            //context.getEnvironment().setDefaultProfiles("");
+            //Context.getEnvironment().setActiveProfiles("");
+            //Context.getEnvironment().setDefaultProfiles("");
             context.start();
         } catch (BeansException e) {
             e.printStackTrace();
