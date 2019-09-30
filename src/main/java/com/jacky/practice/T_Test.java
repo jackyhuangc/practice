@@ -30,4 +30,31 @@ public class T_Test {
 
         assert null != str;
     }
+
+    @Test
+    public void test2() {
+        T1_Enum t_enum = T1_Enum.valueOf("Spring");
+        assert null != t_enum;
+
+        T2_Enum t2_enum=T2_Enum.valueOf("Spring");
+        assert null != t2_enum;
+    }
+}
+
+enum T1_Enum {
+    Spring,
+    Winter
+}
+
+enum T2_Enum {
+    Spring("Spring", "XXX"),
+    Winter("Winter", "YYY");
+
+    private String code;
+    private String desr;
+
+    T2_Enum(String code, String desr) {
+        this.code = code;
+        this.desr = desr;
+    }
 }

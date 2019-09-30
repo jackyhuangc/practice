@@ -19,7 +19,10 @@ public class T_Condition {
     public void test() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.scan("com.jacky.condition");
+        // 初始化 到 beanDefinitionMap
         context.refresh();
+        // prepareBeanFactory(beanFactory);
+        // 	postProcessBeanFactory(beanFactory);->finishBeanFactoryInitialization(beanFactory)
 
         // （自动）方式1.直接用系统初始化是扫描注册bean的方式获取spring容器bean对象，默认的处理方式
         Billy billy = (Billy) context.getBean("billy");
