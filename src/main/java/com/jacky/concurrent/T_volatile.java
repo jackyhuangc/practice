@@ -1,6 +1,9 @@
 package com.jacky.concurrent;
 
 import com.jacky.common.util.LogUtil;
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Field;
 
 /**
  * 请输入描述
@@ -15,20 +18,21 @@ public class T_volatile {
     //private static volatile boolean SHOULD_EXIT = false;
     private static boolean NEED_EXIT = false;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
-        Thread thread1 = new Thread(T_volatile::Run1);
-        Thread thread2 = new Thread(T_volatile::Run2);
-        thread1.start();
-
-        // 延迟执行线程2
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        thread2.start();
+        Run3();
+//        Thread thread1 = new Thread(T_volatile::Run1);
+//        Thread thread2 = new Thread(T_volatile::Run2);
+//        thread1.start();
+//
+//        // 延迟执行线程2
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        thread2.start();
 
     }
 
@@ -55,5 +59,80 @@ public class T_volatile {
     private static void Run2() {
         NEED_EXIT = true;
         LogUtil.error("线程2：标识已经修改...");
+    }
+
+
+    static int x = 0, y = 0;
+
+    // 利用volatile 有序性原理，自动插入内存屏障，禁止指令重排
+    static volatile int a = 0, b = 0;
+
+    private static void Run3() throws InterruptedException {
+        int i = 0;
+        while (true) {
+            i++;
+            a = 0;
+            b = 0;
+            x = 0;
+            y = 0;
+
+            Thread thread1 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    a = 1;
+                    // 手动插入内存屏障，禁止指令重排
+                    //getUnsafeInstance().storeFence();
+                    x = b;
+                }
+            });
+
+            Thread thread2 = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    b = 1;
+                    // 手动插入内存屏障，禁止指令重排
+                    //getUnsafeInstance().storeFence();
+                    y = a;
+                }
+            });
+
+            thread1.start();
+            thread2.start();
+
+            // 等待线程1执行完，再继续
+            thread1.join();
+            // 等待线程2执行完，再继续
+            thread2.join();
+
+            try {
+                System.out.println(String.format("%s,x:%s,y:%s", i, x, y));
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // 由于线程1和线程2都执行完再继续，因此正常情况不会出现x,y同时为0的情况
+            if (x == 0 && y == 0) {
+                System.out.println("发生指令重排，程序退出");
+                break;
+            }
+        }
+    }
+
+    public static Unsafe getUnsafeInstance() {
+        try {
+            Class<?> clazz = Unsafe.class;
+            Field f = clazz.getDeclaredField("theUnsafe");
+            f.setAccessible(true);
+            Unsafe unsafe = (Unsafe) f.get(clazz);
+            return unsafe;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
