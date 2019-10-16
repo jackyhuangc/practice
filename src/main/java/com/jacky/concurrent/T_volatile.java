@@ -20,6 +20,8 @@ public class T_volatile {
 
     public static void main(String[] args) throws InterruptedException {
 
+        new ClassB().test();
+
         Run3();
 //        Thread thread1 = new Thread(T_volatile::Run1);
 //        Thread thread2 = new Thread(T_volatile::Run2);
