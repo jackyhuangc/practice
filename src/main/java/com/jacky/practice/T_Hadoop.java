@@ -94,7 +94,7 @@ public class T_Hadoop extends Configured {
             conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
             conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
 //            //conf.setBoolean(name, value);
-            conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+            conf.set("dfs.client.failover.proxy.Provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
 
 
             //conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
@@ -173,7 +173,7 @@ public class T_Hadoop extends Configured {
             conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
             conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
 //            //conf.setBoolean(name, value);
-            conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+            conf.set("dfs.client.failover.proxy.Provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
 
 
             //conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
@@ -244,7 +244,7 @@ public class T_Hadoop extends Configured {
             conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
             conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
 //            //conf.setBoolean(name, value);
-            conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+            conf.set("dfs.client.failover.proxy.Provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
 
 
             //conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
@@ -300,7 +300,7 @@ public class T_Hadoop extends Configured {
         conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
         conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
 //            //conf.setBoolean(name, value);
-        conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+        conf.set("dfs.client.failover.proxy.Provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
 
         // 即使没有下面这行,也可以本地运行 因\hadoop-mapreduce-client-core-2.7.4.jar!\mapred-default.xml 中默认的参数就是 local
         //conf.set("mapreduce.framework.name","local");
@@ -372,7 +372,7 @@ public class T_Hadoop extends Configured {
         conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
         conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
 //            //conf.setBoolean(name, value);
-        conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+        conf.set("dfs.client.failover.proxy.Provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
 
         // 即使没有下面这行,也可以本地运行 因\hadoop-mapreduce-client-core-2.7.4.jar!\mapred-default.xml 中默认的参数就是 local
         //conf.set("mapreduce.framework.name","local");
@@ -444,7 +444,7 @@ public class T_Hadoop extends Configured {
         conf.set("dfs.namenode.rpc-address.ns1.nn1", "master:9000");
         conf.set("dfs.namenode.rpc-address.ns1.nn2", "slave1:9000");
 //            //conf.setBoolean(name, value);
-        conf.set("dfs.client.failover.proxy.provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+        conf.set("dfs.client.failover.proxy.Provider.ns1", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
 
         // 即使没有下面这行,也可以本地运行 因\hadoop-mapreduce-client-core-2.7.4.jar!\mapred-default.xml 中默认的参数就是 local
         //conf.set("mapreduce.framework.name","local");

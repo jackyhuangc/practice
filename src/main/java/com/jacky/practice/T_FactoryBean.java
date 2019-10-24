@@ -80,7 +80,7 @@ class SpiFactoryBean<T> implements FactoryBean<T> {
                     }
                 }
 
-                throw new Exception("no spi server can execute! spiList: " + list);
+                throw new Exception("no Spi server can execute! spiList: " + list);
             }
         };
 

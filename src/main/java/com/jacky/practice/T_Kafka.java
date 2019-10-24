@@ -2,11 +2,11 @@
 //
 //import java.util.*;
 //import java.util.concurrent.TimeUnit;
-//import kafka.consumer.Consumer;
-//import kafka.consumer.ConsumerIterator;
-//import kafka.consumer.KafkaStream;
-//import kafka.javaapi.consumer.ConsumerConnector;
-//import kafka.consumer.ConsumerConfig;
+//import kafka.Consumer.Consumer;
+//import kafka.Consumer.ConsumerIterator;
+//import kafka.Consumer.KafkaStream;
+//import kafka.javaapi.Consumer.ConsumerConnector;
+//import kafka.Consumer.ConsumerConfig;
 //import kafka.javaapi.producer.Producer;
 //import kafka.producer.KeyedMessage;
 //import kafka.producer.ProducerConfig;
@@ -60,11 +60,11 @@
 //class KafkaComsumer extends Thread {
 //    @Override
 //    public void run() {
-//        ConsumerConnector consumer = createConsumer();
+//        ConsumerConnector Consumer = createConsumer();
 //        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
 //        // ����ÿ��topic�������߳�
 //        topicCountMap.put("test2", 1); // һ�δ������л�ȡһ������
-//        Map<String, List<KafkaStream<byte[], byte[]>>> messageStreams = consumer.createMessageStreams(topicCountMap);
+//        Map<String, List<KafkaStream<byte[], byte[]>>> messageStreams = Consumer.createMessageStreams(topicCountMap);
 //        KafkaStream<byte[], byte[]> stream = messageStreams.get("test2").get(0);// ��ȡÿ�ν��յ����������
 //
 //        // ���Խ����·������߳�����
@@ -83,8 +83,8 @@
 //
 //        // B.��ͷ����
 //        /*�������ã�����ͷ��ȡ�����е�������Ϣ*/
-//        //properties.put("auto.commit.enable","false");//auto.commit.enable	true	���true,consumer���ڵ���zookeeperд��ÿ��������offset
-//        //properties.put("auto.offset.reset","smallest");// ָ��consumer����Kafka���ݵ�ʱ��offset��ʼֵ��ɶ����ѡsmallest(��ͷ��ʼ),largest(�ӵ�ǰ��ʼ)
+//        //properties.put("auto.commit.enable","false");//auto.commit.enable	true	���true,Consumer���ڵ���zookeeperд��ÿ��������offset
+//        //properties.put("auto.offset.reset","smallest");// ָ��Consumer����Kafka���ݵ�ʱ��offset��ʼֵ��ɶ����ѡsmallest(��ͷ��ʼ),largest(�ӵ�ǰ��ʼ)
 //        // offsetλ���Ǽ�¼��ǰ������topic���������ѵ���һ����(��������������ʱ???���������Ӧ��Ҳ���ԣ��ؼ��������Ƿ����ڻ��棬Ӱ����Խ��)����group.id=x��smallest��ʾ��ͷ��ʼ��ȡ�������ݣ���ʱ����largest��ʾ�ӵ�ǰ��ʼ��ȡ��������
 //        //properties.put("group.id", "9");
 //        /**************************************/
