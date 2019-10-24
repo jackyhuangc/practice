@@ -17,8 +17,8 @@ public class Circle implements Shape {
     }
 
     @Override
-    public void draw(URL url) {
+    public void draw(URL url, String str) {
 
-        System.out.println("画一个圆形" + url);
+        System.out.println(str + "画一个圆形" + url);
     }
 }

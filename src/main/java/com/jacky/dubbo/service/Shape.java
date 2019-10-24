@@ -18,5 +18,5 @@ public interface Shape {
 
     // 可自定义key @Adaptive("demo")
     @Adaptive
-    void draw(URL url);
+    void draw(URL url,String str);
 }

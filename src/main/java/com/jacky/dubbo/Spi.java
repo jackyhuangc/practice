@@ -52,7 +52,7 @@ public class Spi {
         // 动态生成$Adaptive class。先通过字符串拼接java代码，再通过javassist compiler编译  Shape名称自动转小写
         URL url = URL.valueOf("dubbo://localhost/test?shape=Rect");
         Shape shape4 = extensionLoader.getAdaptiveExtension();
-        shape4.draw(url);
+        shape4.draw(url,"xxx");
 
         // 获取实例5 通过配置key查找
         List<Shape> list1 = extensionLoader.getActivateExtension(url, new String[]{"Circle"});

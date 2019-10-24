@@ -21,8 +21,8 @@ public class Rectangle implements Shape {
 
     @Override
     @Activate(group = "rect")
-    public void draw(URL url) {
+    public void draw(URL url, String str) {
 
-        System.out.println("画一个长方形" + url);
+        System.out.println(str + "画一个长方形" + url);
     }
 }
