@@ -1,6 +1,7 @@
 package com.jacky.rsa;
 
 
+import com.jacky.common.util.JsonUtil;
 import com.jacky.common.util.LogUtil;
 import com.jacky.common.util.StringUtil;
 
@@ -23,6 +24,7 @@ public final class RsaCodingUtil {
 
     public static void main(String[] args) {
 
+        String str =JsonUtil.toJson("{\"abc\":\"xxxx\"}");
         LogUtil.warn("开始测试...........");
 
         String err1 = "5449e7ab955ce09beb1b5184284334272153d670bfc57d7a20e84fadd84b5f46e8081e31866dd6a5b38dfbb465bcb0f7cb4eb5589b654312444fa03cca50dfee584bda43c6788933e3f6053464057f285774041eba9b38df6488057377e1ea5160048fb52e134be5b4d32c5f228f482f006f5d0bf69083d03019046f83594c51";

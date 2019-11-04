@@ -15,8 +15,11 @@ import com.jacky.dubbo.service.Shape;
 public class Consumer {
 
     public Object getRemoteCall(String url) {
+
+        // <dubbo:reference/>
         ReferenceConfig referenceConfig = new ReferenceConfig();
 
+        // 应用配置 <dubbo:application/>
         ApplicationConfig applicationConfig = new ApplicationConfig("consumer");
         referenceConfig.setApplication(applicationConfig);
 
@@ -26,6 +29,10 @@ public class Consumer {
 
         referenceConfig.setInterface(Shape.class);
 
+        // 直连
+        // referenceConfig.setUrl(url);
+
+        // 负载均衡配策略
         referenceConfig.setLoadbalance("roundrobin");
         return referenceConfig.get();
     }

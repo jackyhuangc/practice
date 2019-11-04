@@ -19,16 +19,21 @@ import java.io.IOException;
 public class Provider {
 
     public void start(int port) {
+
+        // 服务config
         ServiceConfig serviceConfig = new ServiceConfig();
+
+        // 应用配置 <dubbo:application/>
         ApplicationConfig applicationConfig = new ApplicationConfig("provider");
         serviceConfig.setApplication(applicationConfig);
 
+        // 协议配置 <dubbo:protocol/> 不配 默认一个20880 冲突
         ProtocolConfig protocolConfig = new ProtocolConfig("dubbo", port);
         serviceConfig.setProtocol(protocolConfig);
 
+        // 注册中心
         // 使用multicast广播方式作为注册中心 暴露服务
         RegistryConfig registryConfig = new RegistryConfig("multicast://224.1.2.3:1234");
-
         //<!-- 标准使用zookeeper注册中心暴露服务地址 -->
         //<dubbo:registry address="zookeeper://127.0.0.1:2181" />
 
