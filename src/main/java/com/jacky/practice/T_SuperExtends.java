@@ -67,23 +67,33 @@ public class T_SuperExtends {
          * extends 子类继承 编译器不知道？具体是哪个子类，为了类型安全，只好阻止向其中加入任何子类 事实上，不能往使用了? extends的数据结构里写入任何的值
          * super 超类 编译器并不知道？具体是哪个超类，为了类型安全，不允许加入特定的任何超类型
          *
-         * 如果要从集合中读取类型T的数据，并且不能写入，可以使用 ? extends 通配符；(Producer Extends)
-         * 如果要从集合中写入类型T的数据，并且不需要读取，可以使用 ? super 通配符；(Consumer Super)
+         * 如果要从集合中读取类型T的数据，并且不能写入，可以使用 ? extends 通配符；(Producer Extends) 上界通配符 (?的上界是Self)，只能传入本类和子类，只能get，不能add
+         * 如果要从集合中写入类型T的数据，并且不需要读取，可以使用 ? super 通配符；(Consumer Super)   下界通配符(?的下界是Self)，只能传入本类和父类，只能add，不能get
          * 如果既要存又要取，那么就不要使用任何通配符
          */
         // 第一、频繁往外读取内容的，适合用<? extends T>
         // 因为编译器只知道fruits是Fruit某个子类的List，但并不知道这个子类具体是什么类，为了类型安全，只好阻止向其中加入任何子类
         List<? extends Self> listExtends = new ArrayList<>();
-        //listExtends.add(new Self());
+        List<? extends Self> listExtends1 = new ArrayList<Son>();
+        List<? extends Self> listExtends2 = new ArrayList<Baby>();
+        //listExtends.add(new Son());
         // 编译器知道它总是 Self或其其继承的超类
-        Super son = listExtends.get(0);
+        Son son = (Son) listExtends1.get(0);
 
         // 第二、经常往里插入的，适合用<? super T>。
         List<? super Self> listSuper = new ArrayList<>();
+        List<? super Self> listSuper1 = new ArrayList<Super>();
         listSuper.add(new Son());
+        listSuper1.add(new Son());
 
         // 编译器在不知道这个超类具体是什么类，只能返回Object对象，因为Object是任何Java类的最终祖先类
-        Object super1 = listSuper.get(0);
+        //Object super1 = listSuper.get(0);
+
+        /**
+         * extends 可用于的返回类型限定，不能用于参数类型限定。
+         * super 可用于参数类型限定，不能用于返回类型限定。
+         * 带有super超类型限定的通配符可以向泛型对易用写入，带有extends子类型限定的通配符可以向泛型对象读取。
+         */
 
         // SingletonTemplate
         Singleton single = Singleton.getInstance();
@@ -147,4 +157,9 @@ class Self extends Super {
 }
 
 class Son extends Self {
+
+    private String son_1 = "son_1";
+}
+
+class Baby extends Son {
 }
