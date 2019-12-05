@@ -10,9 +10,9 @@ import java.util.concurrent.TimeoutException;
 
 public class T_RabbitMQ {
 
-    public final static String EXCHANGE_NAME = "rabbitMQ.exchange"; // 交换器
-    public final static String ROUTING_KEY = "rabbitMQ.key"; // 路由键
-    public final static String QUEUE_NAME = "rabbitMQ.queue"; // 队列
+    public final static String EXCHANGE_NAME = "rabbitMQ1.exchange"; // 交换器
+    public final static String ROUTING_KEY = "rabbitMQ1.*"; // 路由键
+    public final static String QUEUE_NAME = "rabbitMQ1.queue"; // 队列
     // 队列持久化 我们需要确认RabbitMQ永远不会丢失我们的队列。为了这样，我们需要声明它为持久化
     public final static Boolean DURABLE = true;
     // 消息持久化 我们需要标识我们的信息为持久化的
@@ -61,8 +61,22 @@ public class T_RabbitMQ {
         //创建一个通道
         Channel channel = connection.createChannel();
 
+        /**
+         *  四种交换器类型
+         *
+         *  DIRECT("direct"), 处理路由键。需要将一个队列绑定到交换机上，要求该消息与一个特定的路由键完全匹配。这是一个完整的匹配。如果一个队列绑定到该交换机上要求路由键 “test”，则只有被标记为“test”的消息才被转发，不会转发test.aaa，也不会转发dog.123，只会转发test。  比较适用
+         *
+         *  FANOUT("fanout"), 不处理路由键。你只需要简单的将队列绑定到交换机上。一个发送到交换机的消息都会被转发到与该交换机绑定的所有队列上。很像子网广播，每台子网内的主机都获得了一份复制的消息。Fanout交换机转发消息是最快的。
+         *  适用场景：exchange a 与 exchange b(fanout类型)后使用，所有转发到exchange a+ routing key的数据将转发到 exchange b的所有队列queue中
+         *
+         *
+         *  TOPIC("topic"), 将路由键和某模式进行匹配。此时队列需要绑定要一个模式上。符号“#”匹配一个或多个词，符号“*”匹配不多不少一个词。因此“audit.#”能够匹配到“audit.irs.corporate”，但是“audit.*” 只会匹配到“audit.irs”。
+         *  使用场景：QBUS，比较适用
+         *
+         *  HEADERS("headers"), Headers类型的exchange使用的比较少，它也是忽略routingKey的一种路由方式。是使用Headers来匹配的。Headers是一个键值对，可以定义成Hashtable。发送者在发送的时候定义一些键值对，接收者也可以再绑定时候传入一些键值对，两者匹配的话，则对应的队列就可以收到消息。匹配有两种方式all和any
+         */
         // 创建一个type=direct的  持久化的 非自动删除的交换器
-        channel.exchangeDeclare(EXCHANGE_NAME, "direct", DURABLE, false, null);
+        channel.exchangeDeclare(EXCHANGE_NAME, "topic", DURABLE, false, null);
 
         // 声明一个队列 队列持久化非自动删除 QUEUE_DURABLE=true
         // 第二篇有介绍当exchange的名称为空字符串的时候，创建queue的时候用到queue的名字和Producer的BasicPublish方法或Consuner的BasicConsume方法的routing key的名字可以是相同的。即queue的名字和routing key的名字是相同的。
@@ -101,7 +115,8 @@ public class T_RabbitMQ {
                 // props other properties for the message - routing headers etc
                 // body the message body
                 //channel.basicPublish("", QUEUE_NAME, MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
-                channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
+                //channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
+                channel.basicPublish(EXCHANGE_NAME, "rabbitMQ.key", MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
 
                 System.out.println("Producer Send +'" + message + "'");
             }
@@ -143,7 +158,7 @@ public class T_RabbitMQ {
 
         System.out.println("Customer Waiting Received messages");
         //DefaultConsumer类实现了Consumer接口，通过传入一个频道，
-        // 告诉服务器我们需要那个频道的消息，如果频道中有消息，就会执行回调函数handleDelivery
+        // 告诉服务器我们需要那个通道的消息，如果通道中有消息，就会执行回调函数handleDelivery
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope,
