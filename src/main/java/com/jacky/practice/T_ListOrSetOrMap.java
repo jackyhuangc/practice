@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -55,6 +56,23 @@ public class T_ListOrSetOrMap {
         // 最常用 Set HashSet/TreeSet 单线程中(可排序) 或多线程 Collections.synchronizedSet(new TreeSet)或 CopyOnWriteArraySet
         // 最常用 Map HashMap 单线程 或 ConcurrentHashMap多线程
 
+
+        /*
+        List<String> list = new ArrayList<>(); // jdk1.0加入，线程不安全，高效率/低并发
+        List<String> list = new Vector<>(); // jdk1.2加入，线程安全，低效率/高并发，基于synchronized关键字实现
+        List<String> list = Collections.synchronizedList(new ArrayList<>());// jdk1.2加入，线程安全，低效率/高并发，基于synchronized关键字实现
+        List<String> list = new CopyOnWriteArrayList<>(); // jdk1.5加入。线程安全，低效率/高并发，基于ReentrantLock实现，写时复制/读写分离
+
+        Set<String> set = new HashSet<>();  // jdk1.2加入，线程不安全，高效率/低并发
+        Set<String> set = Collections.synchronizedSet(new HashSet<String>());// jdk1.2加入，线程安全，低效率/高并发，基于synchronized关键字实现
+        Set<String> set = new CopyOnWriteArraySet<>(); // jdk1.5加入，内部基于CopyOnWriteArrayList实现
+
+        Map<String, String> map = new HashMap<>(); // jdk1.2加入，线程不安全，高效率/低并发
+        Map<String, String> map = Collections.synchronizedMap(new HashMap<>());// jdk1.2加入，线程安全，低效率/高并发，基于synchronized关键字实现
+        Map<String, String> map = new ConcurrentHashMap<>();// jdk1.5加入，线程安全，低效率/高并发，锁分段技术(Segment extends ReentrantLock),结合synchronized关键字实现，可以支持多线程扩容，用时加锁，用完解锁。  1.7用ReentrantLock锁实现，1.8用Synchronized关键字实现
+
+        Map<String, String> hashtable = new Hashtable<>();
+        */
     }
 
     // 这是基础，List、Set、Map

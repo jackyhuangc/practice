@@ -10,9 +10,11 @@ import java.util.concurrent.TimeoutException;
 
 public class T_RabbitMQ {
 
-    public final static String QUEUE_NAME = "rabbitMQ.test";
+    public final static String EXCHANGE_NAME = "rabbitMQ.exchange"; // 交换器
+    public final static String ROUTING_KEY = "rabbitMQ.key"; // 路由键
+    public final static String QUEUE_NAME = "rabbitMQ.queue"; // 队列
     // 队列持久化 我们需要确认RabbitMQ永远不会丢失我们的队列。为了这样，我们需要声明它为持久化
-    public final static Boolean QUEUE_DURABLE = true;
+    public final static Boolean DURABLE = true;
     // 消息持久化 我们需要标识我们的信息为持久化的
     public final static com.rabbitmq.client.AMQP.BasicProperties MESSAGE_PERSISTENT = MessageProperties.PERSISTENT_TEXT_PLAIN;
 
@@ -25,6 +27,7 @@ public class T_RabbitMQ {
 
     public static void main(String[] args) throws IOException, TimeoutException {
 
+        // 模拟开启10个消费者
         for (int i = 0; i < 10; i++) {
 
             ThreadPoolUtil.execute(() -> {
@@ -57,8 +60,17 @@ public class T_RabbitMQ {
 
         //创建一个通道
         Channel channel = connection.createChannel();
-        //  声明一个队列
-        channel.queueDeclare(QUEUE_NAME, QUEUE_DURABLE, false, false, null);
+
+        // 创建一个type=direct的  持久化的 非自动删除的交换器
+        channel.exchangeDeclare(EXCHANGE_NAME, "direct", DURABLE, false, null);
+
+        // 声明一个队列 队列持久化非自动删除 QUEUE_DURABLE=true
+        // 第二篇有介绍当exchange的名称为空字符串的时候，创建queue的时候用到queue的名字和Producer的BasicPublish方法或Consuner的BasicConsume方法的routing key的名字可以是相同的。即queue的名字和routing key的名字是相同的。
+        channel.queueDeclare(QUEUE_NAME, DURABLE, false, false, null);
+
+        // 通过路由键将交换机和队列绑定，这样使得通过 exchange+routing key 过来的消息可以转到queue
+        channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+
         String message = "";
 
         //发送消息到队列中
@@ -83,7 +95,14 @@ public class T_RabbitMQ {
                 }
 
                 message = DateUtil.format(DateUtil.now(), "yyyy-MM-dd HH:mm:ss:SSSS") + "***" + inputStr;
-                channel.basicPublish("", QUEUE_NAME, MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
+
+                // exchange the exchange to publish the message to  相当于分组
+                // routingKey the routing key
+                // props other properties for the message - routing headers etc
+                // body the message body
+                //channel.basicPublish("", QUEUE_NAME, MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
+                channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MESSAGE_PERSISTENT, message.getBytes("UTF-8"));
+
                 System.out.println("Producer Send +'" + message + "'");
             }
             while (true);
@@ -117,7 +136,11 @@ public class T_RabbitMQ {
         Channel channel = connection.createChannel();
 
         //声明要关注的队列
-        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        //channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+
+        // 客户端只需要声明一个队列即可，用于消费消息
+        channel.queueDeclare(QUEUE_NAME, DURABLE, false, false, null);
+
         System.out.println("Customer Waiting Received messages");
         //DefaultConsumer类实现了Consumer接口，通过传入一个频道，
         // 告诉服务器我们需要那个频道的消息，如果频道中有消息，就会执行回调函数handleDelivery
