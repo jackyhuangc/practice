@@ -85,6 +85,30 @@ public class T_RabbitMQ {
         // 通过路由键将交换机和队列绑定，这样使得通过 exchange+routing key 过来的消息可以转到queue
         channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
 
+        channel.addConfirmListener(new ConfirmListener() {
+            //消息失败处理
+            @Override
+            public void handleNack(long deliveryTag, boolean multiple) throws IOException {
+                //deliveryTag；唯一消息标签
+                //multiple：是否批量
+                System.err.println("-------no ack!-----------");
+            }
+            //消息成功处理
+            @Override
+            public void handleAck(long deliveryTag, boolean multiple) throws IOException {
+                System.err.println("-------ack!-----------");
+            }
+        });
+
+        channel.addReturnListener(new ReturnCallback() {
+            @Override
+            public void handle(Return aReturn) {
+                System.out.println("err code :" + aReturn.getReplyCode());
+                System.out.println("错误消息的描述 :" +  aReturn.getReplyText());
+                System.out.println("错误的交换机是 :" +  aReturn.getExchange());
+                System.out.println("错误的路右键是 :" +  aReturn.getRoutingKey());
+            }
+        });
         String message = "";
 
         //发送消息到队列中
@@ -175,6 +199,8 @@ public class T_RabbitMQ {
                 // FIXME 不要在消费/接收时处理耗时的任务，应该将消息入库，结合XXL-JOB异步调用执行，否则可能会导致RabbitMQ转发服务超时，
                 // FIXME 增加系统消耗和负担，降低系统可靠性。
 
+                //deliveryTag（唯一标识 ID）：当一个消费者向 RabbitMQ 注册后，会建立起一个 Channel ，RabbitMQ 会用 basic.deliver 方法向消费者推送消息，这个方法携带了一个 delivery tag， 它代表了 RabbitMQ 向该 Channel 投递的这条消息的唯一标识 ID，是一个单调递增的正整数，delivery tag 的范围仅限于 Channel
+                //multiple：为了减少网络流量，手动确认可以被批处理，当该参数为 true 时，则可以一次性确认 delivery_tag 小于等于传入值的所有消息
                 channel.basicAck(envelope.getDeliveryTag(), false);
             }
         };
@@ -182,5 +208,7 @@ public class T_RabbitMQ {
         //自动回复队列应答 -- RabbitMQ中的消息确认机制  关闭自动应答，才能保证消息处理异常时不会丢失，而会转发到下一个消费者
         boolean autoAck = false;
         channel.basicConsume(QUEUE_NAME, autoAck, consumer);
+
+        com.jacky.common.util.LogUtil.info("");
     }
 }
