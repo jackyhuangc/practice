@@ -13,6 +13,7 @@ import java.lang.management.ManagementFactory;
 
 public class T_Base {
     public static void main(String[] args) {
+
         String name = ManagementFactory.getRuntimeMXBean().getName();
 
         String s = name.split("@")[0];

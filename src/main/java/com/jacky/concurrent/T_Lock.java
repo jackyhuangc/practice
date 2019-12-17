@@ -140,6 +140,10 @@ class ReadWriteLockDemo {
  * <p>
  * 在JDK1.6中，Java虚拟机提供-XX:+UseSpinning参数来开启自旋锁，使用-XX:PreBlockSpin参数来设置自旋锁等待的次数。
  * 在JDK1.7开始，自旋锁的参数被取消，虚拟机不再支持由用户配置自旋锁，自旋锁总是会执行，自旋锁次数也由虚拟机自动调整。
+ * <p>
+ * <p>
+ * 适用场景：
+ * 自旋锁运用非常广泛， jdk中的juc包原子操作类中都是, 比如： AtomicInteger
  */
 class SpinLockDemo {
     AtomicReference<Thread> atomicReference = new AtomicReference<>();
@@ -162,7 +166,7 @@ class SpinLockDemo {
 /**
  * 同一线程外层函数获得锁之后，内层递归函数仍然能获取该锁的代码。或者同一个线程在外层方法获取锁的时候，在进入内层方法时会自动获取锁。
  * 简单来说，就是线程可进入任何一个已经拥有的锁所同步着的代码块。可重入锁最大的作用就是避免死锁。
- *
+ * <p>
  * 适用场景：多线程访问同一个资源
  */
 class ReentrantLockDemo implements Runnable {

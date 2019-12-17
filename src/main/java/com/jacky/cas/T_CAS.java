@@ -5,6 +5,7 @@ import com.jacky.common.util.LogUtil;
 import com.jacky.rpc.dto.UserDto;
 import lombok.Data;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -12,7 +13,13 @@ import java.util.concurrent.atomic.AtomicStampedReference;
 
 /**
  * 请输入描述
+ *CAS：Compare and Swap，即比较再交换。
  *
+ * jdk5增加了并发包java.util.concurrent.*,其下面的类使用CAS算法实现了区别于synchronouse同步锁的一种乐观锁。JDK 5之前Java语言是靠synchronized关键字保证同步的，这是一种独占锁，也是是悲观锁
+ *
+ * CAS（Compare and swap），即比较并交换，也是实现我们平时所说的自旋锁或乐观锁的核心操作。
+ *
+ * 适用场景：采用乐观锁机制，比Synchronized效率高
  * @author Jacky
  * @date 2019/12/4 2:43 PM
  */

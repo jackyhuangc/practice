@@ -94,6 +94,7 @@ public class T_volatile {
                     b = 1;
                     // 手动插入内存屏障，禁止指令重排
                     //getUnsafeInstance().storeFence();
+
                     y = a;
                 }
             });
@@ -108,6 +109,9 @@ public class T_volatile {
 
             try {
                 System.out.println(String.format("%s,x:%s,y:%s", i, x, y));
+
+                // sleep就是由你主动告诉操作系统，我这个线程暂时处理完毕了（并不是说你的代码全走完，而是在sleep这行先暂停了
+                // 先线程暂时阻塞，交出CPU执行权，避免资源的过渡消耗浪费(CPU飙升，比如即使自旋锁采用while自旋的方式，也应有个次数限制)，或导致其他线程饥饿
                 Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -121,12 +125,18 @@ public class T_volatile {
         }
     }
 
+    /**
+     * 通常我们最好也不要使用Unsafe类，除非有明确的目的，并且也要对它有深入的了解才行。
+     * 要想使用Unsafe类需要用一些比较tricky的办法。Unsafe类使用了单例模式，需要通过一个静态方法getUnsafe()来获取。
+     * 但Unsafe类做了限制，如果是普通的调用的话，它会抛出一个SecurityException异常；只有由主类加载器加载的类才能调用这个方法。
+     */
     public static Unsafe getUnsafeInstance() {
         try {
             Class<?> clazz = Unsafe.class;
             Field f = clazz.getDeclaredField("theUnsafe");
             f.setAccessible(true);
             Unsafe unsafe = (Unsafe) f.get(clazz);
+
             return unsafe;
         } catch (IllegalAccessException e) {
             e.printStackTrace();

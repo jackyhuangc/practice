@@ -14,7 +14,7 @@ public class T_ThreadPool {
     public static void main(String[] args) {
 
         //testThreadPoolTaskExecutor();
-
+        // 自旋锁运用非常广泛， jdk中的juc包原子操作类中都是, 比如： AtomicInteger
         AtomicInteger atomicInteger = new AtomicInteger();
         CountDownLatch countDownLatch = new CountDownLatch(100);
         //CountDownLatch强调一个线程等多个线程完成某件事情。CyclicBarrier是多个线程互等，等大家都完成。
@@ -26,6 +26,7 @@ public class T_ThreadPool {
                 try {
                     Thread.sleep(10000);
                     atomicInteger.addAndGet(1);
+                
                     countDownLatch.countDown();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
