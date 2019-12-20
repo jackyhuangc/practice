@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @ComponentScan("com.jacky.annotation")
 //@EnableAspectJAutoProxy // 启用AOP机制，同时需要增加@Aspect配置
-@EnableAspectJAutoProxy(proxyTargetClass = true)// 强制使用cglib方式生成代理类
+//@EnableAspectJAutoProxy(proxyTargetClass = true)// 强制使用cglib方式生成代理类
 @EnableTransactionManagement // 启用事务机制，同时需要使用@Transactional注解
 public class Context {
 
@@ -28,6 +28,9 @@ public class Context {
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Context.class);
+
+        //context.register(Context.class);
+        //context.refresh();
         /**
          * AnnotationConfigApplicationContext构造函数中，经过了register和refresh两步
          * 1.register扫描指定包下的@Component注解，并将bean定义注册到beanDefinitionMap中。

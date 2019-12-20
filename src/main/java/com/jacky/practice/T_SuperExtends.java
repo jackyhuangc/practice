@@ -3,8 +3,7 @@ package com.jacky.practice;
 import com.jacky.common.util.Md5Util;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Description Here...
@@ -71,7 +70,7 @@ public class T_SuperExtends {
          * 如果要从集合中写入类型T的数据，并且不需要读取，可以使用 ? super 通配符；(Consumer Super)   下界通配符(?的下界是Self)，只能传入本类和父类，只能add，不能get
          * 如果既要存又要取，那么就不要使用任何通配符
          */
-        // 第一、频繁往外读取内容的，适合用<? extends T>
+        // 第一、频繁往外读取内容的，适合用<? extends T>  水果商，无籽西瓜，有籽西瓜
         // List<? extends Frut> 表示 “具有任何从Fruit继承类型的列表”，【*****编译器无法确定List所持有的类型*****】，所以无法安全的向其中添加对象，会造成数据丢失。可以添加null,因为null 可以表示任何类型。所以List 的add 方法不能添加任何有意义的元素，但是可以接受现有的子类型List<Apple> 赋值。
         List<? extends Self> listExtends = new ArrayList<>();
         List<? extends Self> listExtends1 = new ArrayList<Son>();
@@ -81,6 +80,9 @@ public class T_SuperExtends {
         // 编译器知道它总是 Self或其其继承的超类
         // 由于，其中放置是从Self中继承的类型，所以可以安全地取出Self类型，至少List中的对象数据不会丢失，可以明确转换出来。
         //Son son = (Son) listExtends1.get(0);
+
+        // 写用super,读用extends
+        Collections.copy(null,null);
 
         // 第二、经常往里插入的，适合用<? super T>。
         // List<? super Fruit> 表示“具有任何Fruit超类型的列表”，【*****列表的类型至少是一个 Fruit 类型******】，因此可以安全的向其中添加Fruit 及其子类型，不会有任何数据丢失。
@@ -113,6 +115,9 @@ public class T_SuperExtends {
 }
 
 class Singleton {
+    LinkedList linkedList;
+    AbstractSet set;
+    WeakHashMap  weakHashMap;
     // 在一个线程的工作内存中修改了该变量的值，该变量的值立即能回显到主内存中，从而保证所有的线程看到这个变量的值是一致的。
     // 所以在处理同步问题上它大显作用，而且它的开销比synchronized小、使用成本更低
     public volatile static Singleton instance = null;

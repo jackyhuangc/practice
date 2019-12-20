@@ -68,6 +68,9 @@ public class T_ThreadLocal {
         new Thread(new MyRunnable(1)).start();
         new Thread(new MyRunnable(2)).start();
         new Thread(new MyRunnable(3)).start();
+
+        // 主线程没有设置,所以为null
+        LogUtil.info(String.format("%s,%s", Thread.currentThread().getName(), threadLocal.get()));
     }
 }
 

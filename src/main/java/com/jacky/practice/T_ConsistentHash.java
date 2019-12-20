@@ -11,6 +11,11 @@ import java.util.TreeMap;
  * @author Jacky Huang
  * @date 2018/3/20 14:33
  * @since jdk1.8
+ *
+ * 一致性Hash算法将整个Hash空间组织成一个虚拟的圆环，Hash函数的值空间为0 ~ 2^32 - 1(一个32位无符号整型)
+ *
+ * 这时我们发现有大量数据集中在节点A上，而节点B只有少量数据。为了解决数据倾斜问题，一致性Hash算法引入了虚拟节点机制，即对每一个服务器节点计算多个哈希，每个计算结果位置都放置一个此服务节点，称为虚拟节点。
+ * 具体操作可以为服务器IP或主机名后加入编号来实现
  */
 public class T_ConsistentHash {
     //待添加入Hash环的服务器列表
@@ -95,6 +100,7 @@ class ConsistentHashingWithoutVirtualNode {
     private static final int VIRTUAL_NODES = 5;
 
     static {
+
         //先把原始的服务器添加到真实结点列表中
         for (int i = 0; i < servers.length; i++)
             realNodes.add(servers[i]);
