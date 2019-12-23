@@ -27,6 +27,17 @@ public class Context {
 
     public static void main(String[] args) {
 
+        /**
+         * 实例化--->初始化
+         *
+         * InstantiationAwareBeanPostProcessor定义的方法是在对象实例化过程中做处理
+         * BeanPostProcessor定义的方法是在对象初始化过程中做处理。
+         */
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestConfiguration.class);
+        context.close();
+    }
+
+    public static void test() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Context.class);
 
         //context.register(Context.class);
