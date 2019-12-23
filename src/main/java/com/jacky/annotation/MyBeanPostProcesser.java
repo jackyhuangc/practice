@@ -53,7 +53,7 @@ public class MyBeanPostProcesser implements BeanPostProcessor {
             LogUtil.warn("初始化完成......在init之后记录一些日志");
         }
 
-        // Bean的后置处理器的作用主要是将创建出来的bean进行验证或者proxy，然后得到包装的bean，比如我们通过aop生成的代理类添加了很多前置、后置或环绕增强的机制，可用于数据脱敏操作
+        // Bean的后置处理器的作用主要是将创建出来的bean进行验证或者proxy，然后得到包装的bean，比如我们通过aop生成的代理类添加了很多前置、后置或环绕增强的机制，可用于数据脱敏操作，jdk动态代理/cglib动态代理(基于asm字节码操作框架)
         // 我们可以在Spring配置文件中添加多个BeanPostProcessor(后置处理器)接口实现类，在默认情况下Spring容器会根据后置处理器的定义顺序来依次调用。
         return bean;
     }
