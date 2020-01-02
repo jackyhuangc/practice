@@ -3,10 +3,12 @@ package com.jacky.practice;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jacky.common.util.JsonUtil;
 import com.jacky.common.util.LogUtil;
+import io.netty.util.concurrent.FastThreadLocal;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 
 /***
@@ -52,8 +54,12 @@ public class T_ThreadLocal {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
+        test4();
+    }
+
+    public static void test1() {
         Test t1 = new Test();
         t1.setA("a1");
         t1.setB("b1");
@@ -71,6 +77,75 @@ public class T_ThreadLocal {
 
         // 主线程没有设置,所以为null
         LogUtil.info(String.format("%s,%s", Thread.currentThread().getName(), threadLocal.get()));
+    }
+
+    public static void test2() throws InterruptedException {
+
+        CountDownLatch countDownLatch = new CountDownLatch(10000);
+        ThreadLocal<String> threadLocal = new ThreadLocal<>();
+
+        long times = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+
+            new Thread(() -> {
+                threadLocal.set(Thread.currentThread().getName());
+                for (int j = 0; j < 10000; j++) {
+                    threadLocal.get();
+                }
+                countDownLatch.countDown();
+            }, String.valueOf(i) + "线程").start();
+        }
+
+        countDownLatch.await();
+
+        System.out.println(String.format("累计耗时：%s", System.currentTimeMillis() - times));
+    }
+
+    public static void test3() throws InterruptedException {
+
+        CountDownLatch countDownLatch = new CountDownLatch(10000);
+        FastThreadLocal<String> threadLocal = new FastThreadLocal<>();
+
+        long times = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+
+            new Thread(() -> {
+                threadLocal.set(Thread.currentThread().getName());
+                for (int j = 0; j < 10000; j++) {
+                    threadLocal.get();
+                }
+                countDownLatch.countDown();
+            }, String.valueOf(i) + "线程").start();
+        }
+
+        countDownLatch.await();
+
+        System.out.println(String.format("累计耗时：%s", System.currentTimeMillis() - times));
+    }
+
+    public static void test4() throws InterruptedException {
+
+        int size = 10000;
+        ThreadLocal<String> tls[] = new ThreadLocal[size];
+        for (int i = 0; i < size; i++) {
+            tls[i] = new ThreadLocal<String>();
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long starTime = System.currentTimeMillis();
+                for (int i = 0; i < size; i++) {
+                    tls[i].set("value" + i);
+                }
+                for (int i = 0; i < size; i++) {
+                    for (int k = 0; k < 100000; k++) {
+                        tls[i].get();
+                    }
+                }
+                System.out.println(System.currentTimeMillis() - starTime + "ms");
+            }
+        }).start();
     }
 }
 
