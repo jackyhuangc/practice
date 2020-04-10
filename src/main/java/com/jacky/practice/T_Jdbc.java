@@ -21,13 +21,13 @@ public class T_Jdbc {
 		Class.forName("com.mysql.jdbc.Driver");
 
 		// （2）建立并获取数据库连接
-		Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root",
-				"123456"); // 连接数据库
+		Connection conn = (Connection) DriverManager.getConnection("jdbc:mysql://rm-uf60ec1554fou12qk33150.mysql.rds.aliyuncs.com:3306/biz_mq?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&autoReconnectForPools=true&pinGlobalTxToPhysicalConnection=true", "biz_test",
+				"1Swb3hAN0Hax9p"); // 连接数据库
 
 		// （3）创建JDBC Statements对象,建议用PreparedStatement，预编译，效率高
 		PreparedStatement ps = null;
 
-		String sql = "select count(*) from users ";
+		String sql = "select count(*) from queue ";
 
 		// （4）设置SQL语句的传入参数
 		// ps.setString(1, "");
